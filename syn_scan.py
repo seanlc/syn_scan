@@ -22,7 +22,7 @@ def checksum(msg):
     return s
 
 def scan_port(portNum):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_RAW)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_TCP)
     try:
 #        s.connect((hostname, portNum))
 
