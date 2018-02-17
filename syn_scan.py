@@ -1,4 +1,4 @@
-# usage: syn_scan hostName
+# usage: syn_scan hostName portNumber
 
 import socket
 import sys
@@ -75,6 +75,7 @@ def make_tcp_header(portNum):
 
     #build first version of tcp_header
     tmpheader = struct.pack('!HHLLBBHHH', tcp_src_prt, tcp_dst_prt, tcp_seq_number, tcp_ack_number, tcp_offset_res, tcp_flags, tcp_window_sz, tcp_checksum, tcp_urgent_ptr)
+
     #build psuedo-header    
     psd = make_psuedo_header(tmpheader)
     
@@ -88,7 +89,7 @@ def make_tcp_header(portNum):
 
 
 def scan_port(portNum):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_TCP)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_RAW)
     try:
         sock.setsockopt(socket.IPPROTO_IP, socket.IP_HDRINCL, 1)
 
