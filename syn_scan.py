@@ -26,6 +26,7 @@ def scan_port(portNum):
     try:
 #        s.connect((hostname, portNum))
 
+        sock.setsockopt(socket.IPPROTO_IP, socket.IP_HDRINCL, 1)
         # msg to be sent
         msg = b'hello world'
 
@@ -50,7 +51,7 @@ def scan_port(portNum):
 
         tcp_src_prt = 65123
         tcp_dst_prt = portNum
-        tcp_seq_number = 0
+        tcp_seq_number = 454
         tcp_ack_number = 0
         tcp_doff = 5
 
@@ -61,10 +62,11 @@ def scan_port(portNum):
         tcp_syn_flag = 1
         tcp_fin_flag = 0
 
-        tcp_offset_res = (tcp_doff << 4)
+        tcp_offset_res = (tcp_doff << 4) + 0
         tcp_flags = tcp_fin_flag + (tcp_syn_flag << 1) + (tcp_rst_flag << 2) + (tcp_psh_flag << 3) + (tcp_ack_flag << 4) + (tcp_urg_flag << 5)
+#        tcp_flags = (tcp_urg_flag << 5) + (tcp_ack_flag << 4) + (tcp_psh_flag << 3) + (tcp_rst_flag  << 2) + (tcp_syn_flag << 1) + (tcp_fin_flag)
 
-        tcp_window_sz = 64240
+        tcp_window_sz = socket.htons(5840)
         tcp_checksum = 0
         tcp_urgent_ptr = 0
 
