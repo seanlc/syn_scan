@@ -5,6 +5,7 @@ import sys
 import concurrent.futures
 import struct
 
+# found this function here: 
 def checksum(msg):
   s = 0
   # loop taking 2 characters at a time
@@ -20,26 +21,6 @@ def checksum(msg):
 
     return s
 
-def chksum(msg):
-        s = 0       # Binary Sum
-
-        # loop taking 2 characters at a time
-        for i in range(0, len(msg), 2):
-            if (i+1) < len(msg):
-                a = msg[i] 
-                b = msg[i+1]
-                s = s + (a+(b << 8))
-            elif (i+1)==len(msg):
-                s += msg[i]
-            else:
-                raise "Something Wrong here"
-
-
-        # One's Complement
-        s = s + (s >> 16)
-        s = ~s & 0xffff
-
-        return s
 def make_ip_header():
     ip_version = 4
     ip_ihl = 5
@@ -97,9 +78,10 @@ def make_tcp_header(portNum):
 
     #build psuedo-header    
     psd = make_psuedo_header(tmpheader)
-    
-    #calculate checksum
+   
+    # this is where I cheated and manually added in the correct checksum to see if I would get a SYN ACK in response. There was no SYN ACK reply
     tcp_checksum = 0x25d0
+    #calculate checksum
 #    tcp_checksum = checksum(psd)
 
     # build final tcp_header using calculated checksum (not sent in network bytes)
