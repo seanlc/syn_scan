@@ -13,13 +13,13 @@ def checksum(msg):
     w = msg[i] + (msg[i+1] << 8 )
     s = s + w
 
-    s = (s>>16) + (s & 0xffff);
-    s = s + (s >> 16);
+  s = (s>>16) + (s & 0xffff);
+  s = s + (s >> 16);
 
-    #complement and mask to 4 byte short
-    s = ~s & 0xffff
+  #complement and mask to 4 byte short
+  s = ~s & 0xffff
 
-    return s
+  return s
 
 def make_ip_header():
     ip_version = 4
@@ -43,7 +43,7 @@ def make_ip_header():
     return header
 
 def make_psuedo_header(tcp_header):
-    psd_src_addr = socket.inet_aton("192.168.1.1")
+    psd_src_addr = socket.inet_aton(socket.gethostbyname(socket.gethostname()))
     psd_dst_addr = socket.inet_aton(dst_addr)
     psd_reserved = 0
     psd_protocol = socket.IPPROTO_TCP
@@ -79,10 +79,8 @@ def make_tcp_header(portNum):
     #build psuedo-header    
     psd = make_psuedo_header(tmpheader)
    
-    # this is where I cheated and manually added in the correct checksum to see if I would get a SYN ACK in response. There was no SYN ACK reply
-    tcp_checksum = 0x25d0
     #calculate checksum
-#    tcp_checksum = checksum(psd)
+    tcp_checksum = checksum(psd)
 
     # build final tcp_header using calculated checksum (not sent in network bytes)
     header = struct.pack('!HHLLBBH', tcp_src_prt, tcp_dst_prt, tcp_seq_number, tcp_ack_number, tcp_offset_res, tcp_flags, tcp_window_sz) + struct.pack('H', tcp_checksum)  + struct.pack('!H', tcp_urgent_ptr)
@@ -108,8 +106,8 @@ def scan_port(portNum):
         print("sending packet to ip address: " + str(dst_addr))
         sock.sendto(packet, (dst_addr, 0))
 
-        msg = sock.recvfrom(1092)
-        print(msg)
+#        msg = sock.recvfrom(1092)
+#        print(msg)
 
     except socket.error as e:
         print("socket error: " + str(portNum) + ": " + str(e))
